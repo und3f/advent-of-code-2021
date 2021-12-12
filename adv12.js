@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-'use strict';
+"use strict"
 
 const fs = require("fs")
 const path = require("path")
@@ -8,14 +8,14 @@ const path = require("path")
 let contents = fs
   .readFileSync(path.basename(__filename, ".js") + ".txt", "utf8")
   .trim()
-const data = contents
-  .split("\n")
-  .map((line) => line.split("-"))
+const data = contents.split("\n").map((line) => line.split("-"))
 
 class G {
   constructor(relations) {
-    this.names = relations.reduce((a, v) => a.concat(...v), []).filter((v, i, a) => a.indexOf(v) === i)
-    this.bigCaves = this.names.map(a => a[0].toUpperCase() === a[0])
+    this.names = relations
+      .reduce((a, v) => a.concat(...v), [])
+      .filter((v, i, a) => a.indexOf(v) === i)
+    this.bigCaves = this.names.map((a) => a[0].toUpperCase() === a[0])
 
     this.edges = this.names.map(() => [])
     for (const [name1, name2] of relations) {
@@ -25,8 +25,8 @@ class G {
       this.edges[v2].push(v1)
     }
 
-    this.start = this.nameIndex('start')
-    this.end = this.nameIndex('end')
+    this.start = this.nameIndex("start")
+    this.end = this.nameIndex("end")
   }
 
   nameIndex(name) {
@@ -34,40 +34,37 @@ class G {
   }
 
   dfs(path, paths) {
-    const v = path[path.length-1]
+    const v = path[path.length - 1]
 
     if (this.end === v) {
       paths.push(path)
-      return;
+      return
     }
 
     for (const w of this.edges[v]) {
-      if (!(this.bigCaves[w] || path.indexOf(w) === -1))
-        continue
+      if (!(this.bigCaves[w] || path.indexOf(w) === -1)) continue
 
       this.dfs(path.concat(w), paths)
     }
   }
 
   dfsComplex(path, paths, state) {
-    const v = path[path.length-1]
+    const v = path[path.length - 1]
     // console.log(path, state)
 
     if (this.end === v) {
       paths.push(path)
-      return;
+      return
     }
 
     for (const w of this.edges[v]) {
       let thisState = Object.assign({}, state)
-      if (w === this.start)
-        continue
+      if (w === this.start) continue
 
       if (!this.bigCaves[w]) {
         let firstVisit = path.indexOf(w) === -1
         if (!firstVisit) {
-          if (thisState.doubleSmallCave === true)
-            continue
+          if (thisState.doubleSmallCave === true) continue
           thisState.doubleSmallCave = true
         }
       }
@@ -92,14 +89,14 @@ class G {
 
   printPaths(paths) {
     for (const path of paths)
-      console.log(path.map(v => this.names[v]).join(","))
+      console.log(path.map((v) => this.names[v]).join(","))
   }
 }
 
-const g = new G(data);
+const g = new G(data)
 
 let partOne = g.findPaths().length,
-    partTwo = g.findPaths2().length
+  partTwo = g.findPaths2().length
 
 // g.printPaths(g.findPaths2())
 

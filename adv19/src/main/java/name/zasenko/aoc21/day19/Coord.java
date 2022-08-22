@@ -20,7 +20,7 @@ public class Coord implements Comparable<Coord> {
         this.v = new int[]{x, y, z};
     }
 
-    int[] getCoord() {
+    public int[] getCoord() {
         return v;
     }
 
